@@ -1,0 +1,21 @@
+#lang racket ;e.bobkunov@innopolis.university
+
+(define (for-range-2D x-start x-end y-start y-end f)
+  (define (range-helper x)
+    (if (> x x-end)
+        '()
+        (cons (map (lambda (y) (f x y)) (range y-start (+ y-end 1)))
+              (range-helper (+ x 1)))))
+  (range-helper x-start))
+
+(define (coord-to-string x y)
+  (string-append "(" (number->string x) ", " (number->string y) ")"))
+
+
+(displayln (for-range-2D 0 2 0 2 coord-to-string))
+
+(define (sum-coordinates x y)
+  (+ x y))
+
+
+(displayln (for-range-2D 0 2 0 2 sum-coordinates))

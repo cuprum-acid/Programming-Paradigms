@@ -1,0 +1,36 @@
+#lang racket
+
+(define (stream-cons x xs)
+  (delay (cons x (force xs))))
+
+(define (stream-empty)
+  '())
+
+(define (stream-first s)
+  (car (force s)))
+
+(define (stream-rest s)
+  (cdr (force s)))
+
+
+(define (stream-interleave s1 s2)
+  (if (or (stream-empty? s1) (stream-empty? s2))
+      (stream-empty)
+      (stream-cons (stream-first s1) 
+                   (stream-cons (stream-first s2) 
+                                (stream-interleave (stream-rest s1) (stream-rest s2)))))) 
+
+(define (stream-empty? s)
+  (eq? s (stream-empty)))
+
+(define stream1 (stream-cons 1 (stream-cons 2 (stream-cons 3 (stream-empty)))))
+(define stream2 (stream-cons 'a (stream-cons 'b (stream-cons 'c (stream-empty)))))
+
+(define interleaved-stream (stream-interleave stream1 stream2))
+
+(define (stream-take s n)
+  (if (or (zero? n) (stream-empty? s))
+      '()
+      (cons (stream-first s) (stream-take (stream-rest s) (sub1 n)))))
+
+(stream-take interleaved-stream 6) 

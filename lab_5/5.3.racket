@@ -1,0 +1,16 @@
+#lang racket
+(require racket/stream)
+
+(define (stream-filter f s)
+  (cond
+    [(stream-empty? s) empty-stream]
+    [(f (stream-first s))          
+     (stream-cons (stream-first s) (stream-filter f (stream-rest s)))]
+    [else                          
+     (stream-filter f (stream-rest s))]))
+
+(define nums (stream-cons 1 (stream-cons 2 (stream-cons 3 (stream-cons 4 (stream-cons 5 empty-stream))))))
+
+(define even-nums (stream-filter even? nums))
+
+(stream->list even-nums)

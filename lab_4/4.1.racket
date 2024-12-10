@@ -1,0 +1,18 @@
+; e.bobkunov@innopolis.university
+
+#lang racket
+
+(define (attacks? queen1 queen2)
+  (let* ([x1 (first queen1)]
+         [y1 (second queen1)]
+         [x2 (first queen2)]
+         [y2 (second queen2)])
+    (or
+     (= x1 x2)
+     (= y1 y2)
+     (= (abs (- x1 x2)) (abs (- y1 y2))))))
+
+(attacks? '(1 2) '(1 6))
+(attacks? '(4 4) '(2 4))
+(attacks? '(7 3) '(5 1))
+(attacks? '(1 2) '(4 6))

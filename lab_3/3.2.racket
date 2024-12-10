@@ -1,0 +1,7 @@
+#lang racket ;e.bobkunov@innopolis.university
+
+(define (len-via-map lst)
+  (apply + (map (lambda (_element) 1) lst)))
+
+(define my-list '(8 "example" 3))
+(displayln (len-via-map my-list)) 

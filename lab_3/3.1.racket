@@ -1,0 +1,7 @@
+#lang racket ;e.bobkunov@innopolis.university
+
+(define (len-via-foldl lst)
+  (foldl (lambda (_ acc) (+ acc 1)) 0 lst))
+
+(define my-list '("hello" "world" 10 20))
+(displayln (len-via-foldl my-list))

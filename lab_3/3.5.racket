@@ -1,0 +1,21 @@
+#lang racket ;e.bobkunov@innopolis.university
+
+(define (my-remove-duplicates-with lst pred)
+  (define (remove-duplicates-helper lst seen)
+    (cond
+      [(null? lst) '()]
+      [(ormap (lambda (x) (pred (car lst) x)) seen)
+       (remove-duplicates-helper (cdr lst) seen)]
+      [else (cons (car lst) (remove-duplicates-helper (cdr lst) (cons (car lst) seen)))]))
+  (remove-duplicates-helper lst '()))
+
+(define (equal? a b) (= a b))
+
+(define (case-insensitive-equal? a b)
+  (string=? (string-downcase (symbol->string a)) (string-downcase (symbol->string b))))
+
+(define my-list '(1 1 2 3 5 8 6 6 6))
+(displayln (my-remove-duplicates-with my-list equal?))
+
+(define my-symbols '(H e l l o W w w))
+(displayln (my-remove-duplicates-with my-symbols case-insensitive-equal?))

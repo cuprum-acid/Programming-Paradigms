@@ -1,0 +1,9 @@
+#lang racket ;e.bobkunov@innopolis.university
+
+(define (average nums)
+  (if (null? nums)
+      (error "Cannot compute average of an empty list")
+      (/ (apply + nums) (length nums))))
+
+(define my-numbers '(5 10 15))
+(displayln (average my-numbers)) 

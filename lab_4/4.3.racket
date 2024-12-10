@@ -1,0 +1,29 @@
+; e.bobkunov@innopolis.university
+
+#lang racket
+
+(define (attacks? queen1 queen2)
+  (let* ([x1 (first queen1)]
+         [y1 (second queen1)]
+         [x2 (first queen2)]
+         [y2 (second queen2)])
+    (or
+     (= x1 x2)
+     (= y1 y2)
+     (= (abs (- x1 x2)) (abs (- y1 y2))))))
+
+(define (attacks-any? queen queens)
+  (ormap (lambda (q) (attacks? queen q)) queens))
+
+(define (no-attacks? queens)
+  (cond
+    [(empty? queens) #t]
+    [else
+     (let ([first-queen (first queens)]
+           [rest-queens (rest queens)])
+       (and (not (attacks-any? first-queen rest-queens))
+            (no-attacks? rest-queens)))]))
+
+(no-attacks? '((1 1) (3 2) (2 5)))
+(no-attacks? '((1 2) (1 5) (4 5)))
+(no-attacks? '((1 1) (2 2) (3 3)))

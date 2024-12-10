@@ -1,0 +1,18 @@
+#lang racket ;e.bobkunov@innopolis.university
+
+(define (for-range start end f)
+  (define (range-helper s e)
+    (if (> s e)
+        '()
+        (cons (f s) (range-helper (+ s 1) e))))
+  (range-helper start end))
+
+(define (square x) (* x x))
+
+;; Generate a list of squares from 1 to 5
+(displayln (for-range 1 5 square))
+
+(define (double x) (* 2 x))
+
+;; Generate a list of doubles from 1 to 5
+(displayln (for-range 1 5 double))

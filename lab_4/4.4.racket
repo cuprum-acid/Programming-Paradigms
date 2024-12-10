@@ -1,0 +1,13 @@
+; e.bobkunov@innopolis.university
+
+#lang racket
+
+;; Function to apply a given function to every number in a range [start, end)
+(define (for-range start end f)
+  (if (>= start end)
+      '()
+      (cons (f start) (for-range (add1 start) end f))))
+
+(for-range 1 5 add1)
+(for-range 0 4 (lambda (x) (* x x)))
+(for-range 3 7 (lambda (x) (* 2 x)))

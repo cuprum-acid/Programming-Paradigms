@@ -1,0 +1,22 @@
+#lang racket
+(require racket/stream)
+
+(define (average lst)
+  (/ (apply + lst) (length lst)))
+
+(define (averages s n)
+  (define (sliding-window acc s n)
+    (if (stream-empty? s)
+        empty-stream
+        (let ([next-acc (stream-cons (stream-first s) acc)])
+          (if (= (stream-length next-acc) n)
+              (stream-cons (average (stream->list next-acc)) (sliding-window (stream-rest next-acc) (stream-rest s) n))
+              (sliding-window next-acc (stream-rest s) n)))))
+  (sliding-window empty-stream s n))
+
+
+(define nums (stream-cons 1 (stream-cons 2 (stream-cons 3 (stream-cons 4 (stream-cons 5 (stream-cons 6 empty-stream)))))))
+
+(define avg-stream (averages nums 3))
+
+(stream->list avg-stream)

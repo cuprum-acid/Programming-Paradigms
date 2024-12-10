@@ -1,0 +1,31 @@
+; e.bobkunov@innopolis.university
+
+#lang racket
+
+(define (attacks? queen1 queen2)
+  (let* ([x1 (first queen1)]
+         [y1 (second queen1)]
+         [x2 (first queen2)]
+         [y2 (second queen2)])
+    (or
+     (= x1 x2)
+     (= y1 y2)
+     (= (abs (- x1 x2)) (abs (- y1 y2))))))
+
+(define (safe-position? new-queen queens)
+  (not (ormap (lambda (queen) (attacks? new-queen queen)) queens)))
+
+(define (add-queen-at arrangements column)
+  (define (try-all-rows queens col)
+    (for*/list ([row (in-range 1 9)])
+      (let ([new-queen (list row col)])
+        (if (safe-position? new-queen queens)
+            (cons new-queen queens)
+            #f))))
+    
+  (filter (lambda (arr) (not (equal? arr #f)))
+          (map (lambda (arrangement)
+                 (try-all-rows arrangement column))
+               arrangements)))
+
+(add-queen-at '(((1 1) (3 2)) ((2 1) (4 2))) 3)

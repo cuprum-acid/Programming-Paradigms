@@ -1,0 +1,16 @@
+#lang racket
+(require racket/stream)
+
+(define (prefix-sums s)
+  (define (prefix-helper s acc)
+    (if (stream-empty? s)
+        empty-stream
+        (let ([new-acc (+ acc (stream-first s))])
+          (stream-cons new-acc (prefix-helper (stream-rest s) new-acc)))))
+  (prefix-helper s 0))
+
+(define nums (stream-cons 1 (stream-cons 2 (stream-cons 3 (stream-cons 4 (stream-cons 5 empty-stream))))))
+
+(define prefixed-nums (prefix-sums nums))
+
+(stream->list prefixed-nums)

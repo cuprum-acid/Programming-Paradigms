@@ -1,0 +1,13 @@
+#lang racket ;e.bobkunov@innopolis.university
+
+(define (my-remove-duplicates lst)
+  (define (remove-duplicates-helper lst seen)
+    (cond
+      [(null? lst) '()]
+      [(ormap (lambda (x) (equal? (car lst) x)) seen) 
+       (remove-duplicates-helper (cdr lst) seen)]
+      [else (cons (car lst) (remove-duplicates-helper (cdr lst) (cons (car lst) seen)))]))
+  (remove-duplicates-helper lst '()))
+
+(define my-list '(1 2 3 2 1 4 5 6 6 6))
+(displayln (my-remove-duplicates my-list))
