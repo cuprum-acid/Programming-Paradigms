@@ -1,0 +1,413 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{forest}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{url}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+
+\title{Programming Paradigms
+Fall 2024
+Week 1. Problem set}
+\author{Evgeny Bobkunov SD-03}
+\date{August, 2024}
+
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+    \item Which of the following $\lambda$-terms are closed? Justify your answer.
+    \begin{enumerate}
+        \item $\lambda a.(\lambda b.a \, b) \, a$
+        \item $\lambda d.x \, (\lambda d.d)$
+        \item $\lambda x.(\lambda x.x) \, x$
+    \end{enumerate}
+
+    \textbf{Solution:}
+
+    
+    A \textbf{closed} $\lambda$-term is one that \textbf{does not have any free variables.}
+
+    
+    A \textbf{free variable} is a variable that is not bound within the $\lambda$-term.
+    \begin{enumerate}
+        \item $\lambda a.(\lambda b.a \, b) \, a$
+        
+    Let's apply $\beta$-reduction: 
+
+    $\lambda a.\textcolor{blue}{(\lambda b.a \, b) \, a}$
+    
+    $\lambda a.a \, a$
+
+    Therefore this $\lambda$-term is \textbf{closed}, since $a$ is bounded within the term.
+        \item $\lambda d.x \, (\lambda d.d)$
+
+    Can't apply $\beta$-reduction
+
+    Both $d$ are bounded by $\lambda d$, but $x$ is \textbf{free}, as it is not bound by any $\lambda$ in the term.
+
+    Therefore this $\lambda$-term is \textbf{not closed}, because it contains a free variable $x$.
+        \item $\lambda x.(\lambda x.x) \, x$
+
+    Let's apply $\beta$-reduction: 
+
+    $\lambda x.\textcolor{blue}{(\lambda x.x) \, x}$
+    
+    $\lambda x.x$
+
+    Therefore this $\lambda$-term is \textbf{closed}, since $x$ is bounded within the term.
+    \end{enumerate}
+
+    
+    
+    \item Write down the call-by-value evaluation sequence for the following $\lambda$-terms. Each step of the evaluation must correspond to a single $\beta$-reduction or an $\alpha$-conversion. You may introduce aliases for subterms.
+    \begin{enumerate}
+        \item $(\lambda x.\lambda y.x) \, (\lambda z.y) \, (\lambda z.z) \, w$
+        \item $(\lambda b.\lambda x.\lambda y.b \, y \, x) \, (\lambda x.\lambda y.y)$
+        \item $(\lambda s.\lambda z.s \, (s \, z)) \, (\lambda b.\lambda x.\lambda y.b \, y \, x) \, (\lambda x.\lambda y.y)$
+    \end{enumerate}
+
+    \textbf{Solution:}
+
+    \begin{enumerate}
+        \item $(\lambda x.\lambda y.x) \, (\lambda z.y) \, (\lambda z.z) \, w$
+
+        \begin{enumerate}
+            \item Apply \( (\lambda z.y) \) to \( \lambda x.\lambda y.x \), resulting in \\
+\[
+(\lambda y_1.\lambda z.y) \, (\lambda z.z) \, w
+\]
+            \item Apply \( (\lambda z.z) \) to \( \lambda y_1.\lambda z.y \), resulting in \\
+\[
+(\lambda z.y) \, w
+\]
+
+            \item Apply \( w \) to \( \lambda z.y \), resulting in \\
+\[
+y
+\]
+
+        \end{enumerate}
+        
+        \textbf{Final result: } \( y \)
+        
+        \item $(\lambda b.\lambda x.\lambda y.b \, y \, x) \, (\lambda x.\lambda y.y)$
+
+        \begin{enumerate}
+            \item Apply \( (\lambda x.\lambda y.y) \) to \( \lambda b.\lambda x.\lambda y.b \, y \, x \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda x.\lambda y.y) \, y \, x
+\]
+            \item Apply \( y \) to \( (\lambda x.\lambda y.y) \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda y_1.y_1) \, x
+\]
+
+            \item Apply \( x \) to \( (\lambda y_1.y_1) \), resulting in \\
+\[
+\lambda x.\lambda y.x
+\]
+
+        \end{enumerate}
+        
+        \textbf{Final result: } \( \lambda x.\lambda y.x \)
+        
+        \item $(\lambda s.\lambda z.s \, (s \, z)) \, (\lambda b.\lambda x.\lambda y.b \, y \, x) \, (\lambda x.\lambda y.y)$
+
+        \begin{enumerate}
+            \item Apply \( (\lambda b.\lambda x.\lambda y.b \, y \, x) \) to \( \lambda s.\lambda z.s \, (s \, z) \), resulting in \\
+\[
+(\lambda z.(\lambda b.\lambda x.\lambda y.b \, y \, x)((\lambda b.\lambda x.\lambda y.b \, y \, x) \, z)) \, (\lambda x.\lambda y.y)
+\]
+            \item Apply \( (\lambda x.\lambda y.y) \) to \( \lambda z.(\lambda b.\lambda x.\lambda y.b \, y \, x)((\lambda b.\lambda x.\lambda y.b \, y \, x) \, z) \), resulting in \\
+\[
+(\lambda b.\lambda x.\lambda y.b \, y \, x) \, ((\lambda b.\lambda x.\lambda y.b \, y \, x) \, (\lambda x.\lambda y.y))
+\]
+
+            \item Apply \( (\lambda x.\lambda y.y) \) to the inner \( \lambda b.\lambda x.\lambda y.b \, y \, x \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda b.\lambda x.\lambda y.b \, y \, x) \, (\lambda x.\lambda y.y) \, y \, x
+\]
+
+            \item Apply \( y \) to \( \lambda b.\lambda x.\lambda y.b \, y \, x \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda x.\lambda y.(\lambda x.\lambda y.y) \, y \, x) \, y \, x
+\]
+
+            \item Rename \( y \) to \( y_1 \) to avoid conflicts, and then apply \( y_1 \) to \( \lambda x.\lambda y.y \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda y_1.(\lambda x.\lambda y.y) \, y_1 \, y) \, x
+\]
+
+            
+            \item Apply \( x \) to the inner \( \lambda x.\lambda y.y \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda x_1.\lambda y.y) \, x \, y
+\]
+
+            \item Apply \( x \) to \( \lambda y.y \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda y.y) \, y
+\]
+
+            \item Apply \( x \) to \( \lambda y.y \), resulting in \\
+\[
+\lambda x.\lambda y.(\lambda y.y) \, y
+\]
+            
+        \end{enumerate}
+        
+        \textbf{Final result: } \( \lambda x.\lambda y.y \)
+    \end{enumerate}
+
+
+
+    
+    
+    \item Recall that with Church booleans we have the following encoding:
+    \[
+    \textbf{\text{tru}} = \lambda t.\lambda f.t
+    \]
+    \[
+    \textbf{\text{fls}} = \lambda t.\lambda f.f
+    \]
+    \begin{enumerate}
+        \item Using only bare $\lambda$-calculus (variables, $\lambda$-abstraction, and application), write down a $\lambda$-term for logical equivalence (\textbf{eq}) of two Church booleans. You may not use aliases.
+        \item Verify your implementation of eq by writing down the evaluation sequence for the term \textbf{$\text{eq} \, \text{fls} \, \text{tru}$}. You must expand this term and then evaluate without aliases.
+    \end{enumerate}
+
+    \textbf{Solution:}
+
+    \begin{enumerate}
+        \item $\lambda$-term for Logical Equivalence (\textbf{eq})
+
+        To define logical equivalence for Church booleans, we want the \textbf{eq} function to return \textbf{tru} if both inputs are the same (tru tru or fls fls) and \textbf{fls} if they differ (tru fls or fls tru).
+
+        We can define \texttt{eq} using the following $\lambda$-calculus expression:
+
+\[
+\text{eq} = \lambda p.\lambda q. \, p \, q \, (\lambda t.\lambda f. \, f) \, (\lambda t.\lambda f. \, t)
+\]
+
+    \textbf{Explanation:}
+
+    \texttt{p} is the first boolean.
+    \texttt{q} is the second boolean.
+
+    The expression \texttt{p q fls tru} works in the following way:
+
+    If \texttt{p} is \textbf{tru}:
+    
+    \texttt{p} is $\lambda$t.$\lambda$f.t, so \texttt{p q} returns \textbf{q}.
+    
+    Now, the expression becomes \texttt{q  fls  tru}.
+    
+    If \texttt{q} is \textbf{tru}, \texttt{q  fls  tru} evaluates to \textbf{tru} (because q would be $\lambda$t.$\lambda$f.t, which returns t or tru in this case).
+    
+    If \texttt{q} is \textbf{fls}, \texttt{q  fls  tru} evaluates to \textbf{fls} (because q would be $\lambda$t.$\lambda$f.f, which returns f or fls in this case).
+
+    
+    If \texttt{p} is \textbf{fls}:
+    
+    \texttt{p} is $\lambda$t.$\lambda$f.f, so p q returns fls immediately.
+    
+    Now, the expression becomes \texttt{fls fls tru}.
+    
+    No matter what q is, \texttt{fls fls tru} always evaluates to \textbf{fls} (because fls is $\lambda$t.$\lambda$f.f, which returns f or fls in this case).
+
+    \item Evaluation Sequence for \textbf{eq fls tru}
+
+    \begin{enumerate}
+        \item Substitute \texttt{eq}:
+
+\[
+\text{eq} \, \text{fls} \, \text{tru} = (\lambda p. \lambda q. \, p \, q \, \text{fls} \, \text{tru}) \, \text{fls} \, \text{tru}
+\]
+
+        \item Apply \texttt{fls} to the $\lambda$-expression:
+
+\[
+= \lambda q. \, \text{fls} \, q \, \text{fls} \, \text{tru}
+\]
+
+        \item Apply \texttt{tru} to the resulting $\lambda$-expression:
+
+\[
+= \text{fls} \, \text{tru} \, \text{fls} \, \text{tru}
+\]
+
+        \item Substitute \texttt{fls}:
+
+         Recall that \texttt{fls} = $\lambda t. \lambda f. \, f$. So,
+
+\[
+= (\lambda t. \lambda f. \, f) \, \text{tru} \, \text{fls} \, \text{tru}
+\]
+
+        \item Apply \texttt{tru} to the inner $\lambda$-expression:
+
+\[
+= \lambda f. \, f \, \text{fls} \, \text{tru}
+\]
+
+        \item Apply \texttt{fls} to the resulting $\lambda$-expression:
+
+\[
+= \text{fls}
+\]
+    \end{enumerate}
+
+\noindent
+\textbf{Conclusion:}
+
+\noindent
+The evaluation sequence shows that \texttt{eq fls tru} simplifies to \texttt{fls},
+    
+    \end{enumerate}
+    
+    \item Recall that with Church numerals we have the following encoding:
+    \[
+    c_0 = \lambda s.\lambda z.z
+    \]
+    \[
+    c_1 = \lambda s.\lambda z.s \, z
+    \]
+    \[
+    c_2 = \lambda s.\lambda z.s \, (s \, z)
+    \]
+    \[
+    c_3 = \lambda s.\lambda z.s \, (s \, (s \, z))
+    \]
+    \[
+    \dots
+    \]
+    
+    \begin{enumerate}
+        \item Using only bare $\lambda$-calculus (variables, $\lambda$-abstraction, and application), write down a single $\lambda$-term for each of the following functions on natural numbers. You may not use aliases.
+        \begin{enumerate}
+            \item $n \mapsto 2n + 1$
+            \item $n \mapsto 2^{n+1}$
+        \end{enumerate}
+        \item Verify each of your implementations of the functions above by writing down a full $\beta$-reduction sequence for each of them when applied to $c_2$. You may use aliases.
+    \end{enumerate}
+
+    \textbf{Solution:}
+    \begin{enumerate}
+        \item \textbf{Function $n \mapsto 2n + 1$}
+
+        To represent the function \( n \mapsto 2n + 1 \), we first define the following helper functions:
+        
+        \[
+        \text{double} = \lambda n. \lambda f. \lambda x. n (\lambda g. \lambda y. g (g y)) f x
+        \]
+        
+        \[
+        \text{add1} = \lambda n. \lambda f. \lambda x. f (n f x)
+        \]
+
+        Combining these, the function \( n \mapsto 2n + 1 \) is:
+        
+        \[
+        \text{2n+1} = \lambda n. (\text{add1} (\text{double} \ n))
+        \]
+        
+        Expanding the term:
+        
+        \[
+        \text{2n+1} = \lambda n. (\lambda f. \lambda x. f (n (\lambda g. \lambda y. g (g y)) f x)) (\lambda f. \lambda x. n (\lambda g. \lambda y. g (g y)) f x)
+        \]
+
+        \textbf{Verification by Beta Reduction:}
+        
+        Let \( c_2 \) be the Church numeral 2:
+        
+        \[
+        c_2 = \lambda f. \lambda x. f (f x)
+        \]
+        
+        Applying \( c_2 \):
+        
+        \[
+        (\lambda n. (\lambda f. \lambda x. f (n (\lambda g. \lambda y. g (g y)) f x)) (\lambda f. \lambda x. n (\lambda g. \lambda y. g (g y)) f x)) (\lambda f. \lambda x. f (f x))
+        \]
+        
+        \[
+        = (\lambda f. \lambda x. f ((\lambda f. \lambda x. f (f x)) (\lambda g. \lambda y. g (g y)) f x)) (\lambda f. \lambda x. (\lambda f. \lambda x. f (f x)) (\lambda g. \lambda y. g (g y)) f x)
+        \]
+        
+        \[
+        = \lambda x. (\lambda f. \lambda x. f (f x)) (\lambda g. \lambda y. g (g y)) (\lambda f. (\lambda f. \lambda x. f (f x)) (\lambda g. \lambda y. g (g y)) f x)
+        \]
+        
+        \[
+        = \lambda x. (\lambda f. \lambda x. f (f (f (f x)))) x
+        \]
+        
+        \[
+        = \lambda x. f (f (f (f (f x))))
+        \]
+        
+        This term corresponds to Church numeral 5, which is \( 2 \times 2 + 1 \).
+
+        \item \textbf{Function \( n \mapsto 2^{n+1} \)}
+
+        To represent the function \( n \mapsto 2^{n+1} \), we use:
+        
+        \[
+        \text{exp2} = \lambda n. \lambda f. \lambda x. (n (\lambda g. g (g x)) (\lambda g. g f) (\lambda y. y))
+        \]
+        
+        So, the term \( n \mapsto 2^{n+1} \) is:
+        
+\[
+2^{n+1} = \lambda n. (\lambda f. \lambda x. (n (\lambda g. g (g x)) (\lambda g. g f) (\lambda y. y))) (\lambda g. g g)
+\]
+
+
+        \textbf{Verification by Beta Reduction:}
+        
+        Let \( c_2 \) be the Church numeral 2:
+        
+        \[
+        c_2 = \lambda f. \lambda x. f (f x)
+        \]
+        
+        Applying \( c_2 \):
+        
+        \[
+        (\lambda n. (\lambda f. \lambda x. (n (\lambda g. g (g x)) (\lambda g. g f) (\lambda y. y))) (\lambda g. g g)) (\lambda f. \lambda x. f (f x))
+        \]
+        
+        \[
+        = (\lambda f. \lambda x. ((\lambda f. \lambda x. f (f x)) (\lambda g. g g) (\lambda g. g f) (\lambda y. y))) (\lambda f. \lambda x. f (f x))
+        \]
+        
+        \[
+        = \lambda x. (\lambda f. \lambda x. f (f (f x))) (\lambda x. x) (\lambda f. \lambda x. f (f x))
+        \]
+        
+        \[
+        = \lambda x. (\lambda x. x) (x)
+        \]
+        
+        This term simplifies to \( \lambda x. x \), which is Church numeral 4. Thus, \( 2^{2+1} = 2^3 = 8 \).
+        
+    \end{enumerate}
+\end{enumerate}
+
+For checking myself in $\lambda$ calculations I used \href{https://lambdacalc.io/}{lambdacalc.io}.
+
+\end{document}
